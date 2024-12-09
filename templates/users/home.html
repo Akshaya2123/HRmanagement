@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Light Mode Styles */
+        body {
+            min-height:100dvh;
+            background-image: #f8f9fa;
+            color: #333;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #000;
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        /* Dark Mode Styles */
+        body[data-theme="dark"] {
+            background-color: #181818;
+            color: #f1f1f1;
+        }
+
+        body[data-theme="dark"] a {
+            color: #f1f1f1;
+        }
+
+        body[data-theme="dark"] .navbar {
+            background-color: #333;
+        }
+
+        body[data-theme="dark"] .navbar-light .navbar-nav .nav-link {
+            color: #f1f1f1;
+        }
+
+        body[data-theme="dark"] .navbar-light .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+
+        body[data-theme="dark"] .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        body[data-theme="dark"] .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        body[data-theme="dark"] footer {
+            background-color: #333;
+            color: #f1f1f1;
+        }
+
+        /* Toggle Button */
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        body[data-theme="dark"] .theme-toggle-btn {
+            color: #f1f1f1;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">HR Management System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">{% if user.username %}
+                    <a class="nav-link" href="/users/logout/">Logout</a>
+                    {% else %}
+                    <a class="nav-link" href="/users/login/">Login</a>
+                    {% endif %}</li>
+                   
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+                </ul>
+                <!-- Light/Dark Mode Toggle Button -->
+                <button class="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
+            </div>
+            <div>{% if user.username %}Hello {{ user.username }}!{% endif %}</div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 text-center">
+        <h1>Welcome to HR Management System</h1>
+        <a href="/employees/" class="btn btn-primary">Check Employees</a>
+    </div>
+
+    <footer class="py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 HR Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Function to toggle between light and dark modes
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'light');
+                document.querySelector('.theme-toggle-btn').innerHTML = '🌙'; // Moon icon for light mode
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                document.querySelector('.theme-toggle-btn').innerHTML = '🌞'; // Sun icon for dark mode
+            }
+        }
+
+        // Set the theme based on user preference stored in localStorage
+        window.onload = function() {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                document.body.setAttribute('data-theme', storedTheme);
+                const themeToggleButton = document.querySelector('.theme-toggle-btn');
+                themeToggleButton.innerHTML = storedTheme === 'dark' ? '🌞' : '🌙';
+            }
+        };
+
+        // Save the current theme to localStorage
+        window.addEventListener('DOMContentLoaded', function() {
+            const theme = document.body.getAttribute('data-theme');
+            localStorage.setItem('theme', theme);
+        });
+    </script>
+</body>
+</html>
