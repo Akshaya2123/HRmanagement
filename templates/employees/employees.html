@@ -51,7 +51,7 @@
     </div>
 </nav>
 <div class="grid grid-cols-3 gap-[2rem] p-[2rem]">
-{% for employee in employees %}
+{% for employee in employees reversed %}
 <div class="flex items-center justify-between p-[1rem] border border-black cursor-pointer" onclick="window.location.href='/employees/{{employee.user.id}}'">
     {% if employee.image %}
     <img class="size-[10rem] rounded-[1000rem]" src="{{ employee.image.url }}" alt="{{ employee.user.name }}">

@@ -110,8 +110,6 @@
                     {% else %}
                     <a class="nav-link" href="/users/login/">Login</a>
                     {% endif %}</li>
-                   
-                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
                 </ul>
                 <!-- Light/Dark Mode Toggle Button -->
                 <button class="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
@@ -121,8 +119,12 @@
     </nav>
 
     <div class="container mt-5 text-center">
-        <h1>Welcome to HR Management System</h1>
+        <h1 class="mb-5">Welcome to HR Management System</h1>
+        {% if employee.designation == 'E' %}
+        <a href="/employees/{{employee.user.id}}" class="btn btn-primary">Check Profile</a>
+        {% else %}
         <a href="/employees/" class="btn btn-primary">Check Employees</a>
+        {% endif %}
     </div>
 
     <footer class="py-3">

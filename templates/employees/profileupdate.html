@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+    {% include "css.html" %}
+</head>
+<body>
+    <div class="flex justify-center items-center min-h-[100dvh] bg-slate-300">
+        <form method="post" enctype="multipart/form-data" class="bg-white grid grid-cols-3 gap-[3rem] justify-items-center p-[2rem_2.5rem] items-center justify-center shadow-2xl">
+            {% csrf_token %}
+            <div class="font-semibold text-3xl p-[1rem_1.5rem] col-start-2">{{ employee.user.username }}'s Details</div>
+            <div class="flex flex-col items-center justify-center row-start-2 gap-[1rem]">
+                <img class="size-[4rem] border rounded-[10rem]" id="preview" src="{{employee.image.url}}" alt="{{employee.user.username}}">
+                <label class="font-semibold text-sm cursor-pointer" id="file-label" for="image">Click here to update</label>
+                <input type="file" id="image" name="image" class="hidden">
+            </div>
+            <div class="flex flex-col w-3/4 gap-[1rem] row-start-2 bg-slate-200 p-[.6rem] rounded-md">
+                <label class="text-sm opacity-60" for="job_title">Job Role: </label>
+                <input class="p-[.2rem_.7rem] bg-transparent border-b-2 border-black outline-none" value="{{employee.job_title}}" type="text" id="job_title" name="job_title">
+            </div>
+            <div class="flex flex-col w-3/4 gap-[1rem] row-start-2 bg-slate-200 p-[.6rem] rounded-md">
+                <label class="text-sm opacity-60" for="gender">Gender: </label>
+                <select name="gender" id="gender"
+                class="block bg-transparent border-b-2 border-black px-[5rem] outline-none">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+                </select>
+            </div>
+            <div class="flex flex-col w-3/4 gap-[1rem] row-start-3 bg-slate-200 p-[.6rem] rounded-md">
+                <label class="text-sm opacity-60" for="years_of_working">Experience: </label>
+                <input class="p-[.2rem_.7rem] bg-transparent border-b-2 border-black outline-none" value="{{employee.years_of_working}}" type="text" name="years_of_working">
+            </div>
+            <div class="flex flex-col w-3/4 gap-[1rem] row-start-3 bg-slate-200 p-[.6rem] rounded-md">
+                <label class="text-sm opacity-60" for="years_of_working">Department: </label>
+                <input class="p-[.2rem_.7rem] bg-transparent border-b-2 border-black outline-none" value="{{employee.department}}" type="text" name="department">
+            </div>
+            <div class="flex flex-col w-3/4 gap-[1rem] row-start-3 bg-slate-200 p-[.6rem] rounded-md">
+                <label class="text-sm opacity-60" for="years_of_working">Contact: </label>
+                <input class="p-[.2rem_.7rem] bg-transparent border-b-2 border-black outline-none" value="{{employee.contact}}" type="text" name="contact">
+            </div>
+            <input class="bg-blue-700 p-[.7rem_1.2rem] cursor-pointer rounded-2xl text-lg text-white font-semibold" type="submit" value="Save Changes">
+        </form>
+    </div>
+    <script>
+        document.getElementById('image').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        })
+        </script>
+</body>
+</html>

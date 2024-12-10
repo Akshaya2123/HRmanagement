@@ -2,11 +2,13 @@ import random
 from django.conf import settings
 from django.utils.timezone import now,timedelta
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
+from django.db.models import Q
+from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
 from .models import Employee,OTP
+from .decorators import hr_or_admin_required
 
 User = get_user_model()
 
@@ -49,16 +51,49 @@ def user_login(request):
             return redirect('/users/login')
     return render(request, 'users/login.html')
 
+@login_required(login_url='/users/login')
 def user_logout(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url='/users/login')
 def home(request):
-    return render(request, 'users/home.html')
+    employee = Employee.objects.filter(user = request.user).first()
+    return render(request, 'users/home.html',{'employee': employee})
 
+@login_required(login_url='/users/login')
+@hr_or_admin_required
 def employees(request):
-     employees = Employee.objects.all()
-     return render(request,'employees/employees.html',{ 'employees' : employees })
+    if request.user.employee_set.first().designation == 'A':
+        employees = Employee.objects.filter(Q(designation__in=['H', 'E']) | Q(user=request.user))
+    else:
+        employees = Employee.objects.filter(Q(designation='E') | Q(user=request.user))
+    return render(request,'employees/employees.html',{ 'employees' : employees })
+
+@login_required(login_url='/users/login')
+def employee(request,id):
+    user = User.objects.filter(id = id).first()
+    employee = Employee.objects.filter(user = user).first()
+    return render(request,'employees/employee.html',{ 'employee':employee })
+
+@login_required(login_url='/users/login')
+def update_profile(request,id):
+    user = User.objects.filter(id = id).first()
+    employee = Employee.objects.filter(user = user).first()
+    if request.method == "POST":
+        if request.FILES.get('image') == None:
+            pass
+        else:
+            employee.image = request.FILES.get('image')
+        employee.job_title = request.POST.get('job_title')
+        employee.gender = request.POST.get('gender')
+        employee.years_of_working = request.POST.get('years_of_working')
+        employee.contact = request.POST.get('contact')
+        employee.department = request.POST.get('department')
+        employee.save()
+        return redirect(f'/employees/{user.id}')
+    else:
+        return render(request,'employees/profileupdate.html',{'employee':employee})
 
 def generate_otp(user):
     OTP.objects.filter(user=user).delete()
@@ -80,7 +115,11 @@ def verify_otp(request):
                 login(request,user)
                 otp.delete()
                 request.session.pop('user_id',None)
-                return redirect('home')
+                employee = Employee.objects.get(user = user)
+                if employee.designation == 'E':
+                    return redirect(f"/employees/{user.id}")
+                else:
+                    return redirect('home')
             else:
                 messages.error(request,"Invalid or Expired OTP !")
                 return redirect('/verify_otp')
