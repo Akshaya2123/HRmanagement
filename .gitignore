@@ -1,0 +1,65 @@
+# General
+*.pyc
+*.pyo
+*.swp
+.DS_Store
+*.log
+*.pot
+*.py[co]
+*.so
+*.out
+
+# Virtual Environment
+venv/
+env/
+*.env
+*.env.*
+
+# VSCode
+.vscode/
+
+# macOS-specific
+._*
+.Spotlight-V100
+.Trashes
+*.AppleDouble
+.DS_Store
+.LSOverride
+Icon?
+Thumbs.db
+desktop.ini
+
+# npm-specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/dist/
+/build/
+
+# Coverage and Testing
+.coverage
+htmlcov/
+*.cover
+.pytest_cache/
+
+# Build Files
+*.egg-info/
+.eggs/
+MANIFEST
+dist/
+build/
+
+# IDEs and Text Editors
+.idea/
+*.sublime*
+*.swo
+*.swn
+
+# Deployment
+*.secret
+*.key
+/secrets/
+
+# Additional Django Files
+.settings/

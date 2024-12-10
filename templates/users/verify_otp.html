@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    {% include "css.html" %}
+</head>
+<body>
+    <div class="min-h-[100dvh] bg-slate-500 flex justify-center items-center">
+        <form method="post" class="flex flex-col items-center bg-white shadow-2xl w-[30vw] p-[2rem_3rem] gap-[1.5rem]">
+            {% csrf_token %}
+            <div class="text-3xl font-semibold">OTP Verification</div>
+            <div class="text-lg">OTP has been sent to your Email. It will expire in 10 minutes.</div>
+            {% for message in messages %}
+            <div class="text-lg 
+            {% if message.tags == 'success' %} 
+            text-green-600 
+            {% else %} 
+            text-red-600 
+            {% endif %} 
+            font-semibold">{{ message }}</div>
+            {% endfor %}
+            <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" class="border-[.15rem] outline-none text-lg rounded-lg mt-[1rem] p-[.25rem_.75rem] border-slate-400 text-center">
+            <input type="submit" value="Verify" class="bg-slate-400 cursor-pointer p-[.5rem_1rem] rounded-xl text-white font-semibold text-lg">
+            <a href="/request_new_otp" class="underline text-purple-700">Resend OTP</a>
+        </form>
+    </div>
+</body>
+</html>

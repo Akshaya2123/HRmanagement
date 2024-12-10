@@ -132,19 +132,17 @@
     </footer>
 
     <script>
-        // Function to toggle between light and dark modes
         function toggleTheme() {
             const currentTheme = document.body.getAttribute('data-theme');
             if (currentTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'light');
-                document.querySelector('.theme-toggle-btn').innerHTML = '🌙'; // Moon icon for light mode
+                document.querySelector('.theme-toggle-btn').innerHTML = '🌙'; 
             } else {
                 document.body.setAttribute('data-theme', 'dark');
-                document.querySelector('.theme-toggle-btn').innerHTML = '🌞'; // Sun icon for dark mode
+                document.querySelector('.theme-toggle-btn').innerHTML = '🌞';
             }
         }
 
-        // Set the theme based on user preference stored in localStorage
         window.onload = function() {
             const storedTheme = localStorage.getItem('theme');
             if (storedTheme) {
@@ -154,7 +152,6 @@
             }
         };
 
-        // Save the current theme to localStorage
         window.addEventListener('DOMContentLoaded', function() {
             const theme = document.body.getAttribute('data-theme');
             localStorage.setItem('theme', theme);

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Management System</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    {% include "css.html" %}
     <style>
         body {
             min-height:100dvh;
@@ -32,19 +34,6 @@
             color: #333;
         }
 
-        .main {
-            display: grid;
-            padding: 1rem 2rem;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            min-height: 80dvh;
-            gap: 2rem;
-        }
-
-        .main .item {
-            background-color: rgb(210, 209, 209);
-            display: flex;
-        }
-
     </style>
 </head>
 <body>
@@ -61,12 +50,19 @@
         </div>
     </div>
 </nav>
-<div class="main">
+<div class="grid grid-cols-3 gap-[2rem] p-[2rem]">
 {% for employee in employees %}
-<div class="item">
-    <div>{{ employee.user.name }}</div>
-    <img src="{{ employee.image.url | default:'' }}" alt="{{ employee.user.name }}">
-    <div>{{ employee.job_title }}</div>
+<div class="flex items-center justify-between p-[1rem] border border-black cursor-pointer" onclick="window.location.href='/employees/{{employee.user.id}}'">
+    {% if employee.image %}
+    <img class="size-[10rem] rounded-[1000rem]" src="{{ employee.image.url }}" alt="{{ employee.user.name }}">
+    {% else %}
+    <img class="size-[10rem] rounded-[1000rem]" src="{% static 'images/avatar.png' %}" alt="{{ employee.user.name }}">
+    {% endif %}
+    <div class="flex flex-col items-center w-[60%]">
+        <div class="font-semibold text-2xl">{{ employee.user.username }}</div>
+        <div class="">Job Role: {{ employee.job_title }}</div>
+        <div class="">Designation: {{ employee.get_designation_display }}</div>
+    </div>
 </div>
 {% endfor %}
 </div>

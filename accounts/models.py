@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from datetime import datetime
+from django.utils.timezone import now
 from django.db import models
 
 User = get_user_model()
@@ -12,9 +12,18 @@ class Employee(models.Model):
     years_of_working = models.PositiveIntegerField(default=0)
     gender = models.CharField(max_length=1,choices=[('M','Male'),('F','Female'),('O','Other')],blank=True)
     department = models.CharField(max_length=50,blank=True)
-    hire_date = models.DateTimeField(default=datetime.now())
+    hire_date = models.DateTimeField(auto_now_add=True)
     salary = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
-    is_hr = models.BooleanField(default=False)
+    designation = models.CharField(choices=[('E','Employee'),('H','HR Manager'),('A','Admin')],max_length=1)
 
     def __str__(self):
         return self.user.username
+    
+class OTP(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def is_valid(self):
+        return now() < self.expires_at
