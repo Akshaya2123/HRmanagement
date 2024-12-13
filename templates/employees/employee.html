@@ -1,57 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee</title>
-    {% include "css.html" %}
-</head>
-<body>
-    <div class="flex flex-col min-h-[100dvh] bg-slate-300">
-        <div class="h-[35dvh] bg-white"></div>
-        <div class="relative flex min-h-[65dvh] justify-evenly items-start">
-        <div class="absolute flex flex-col gap-[1rem] -top-[7rem] left-[5rem]">
-            <img src="{{employee.image.url}}" alt="{{employee.user.username}}" class="size-[15rem] rounded-[100rem]">
-            <div class="text-lg opacity-60 font-semibold">EMPLOYEE DETAILS</div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Name</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.user.username }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Gender</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.get_gender_display }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Contact</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.contact }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Position</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.job_title }}</div>
-            </div>
+{% extends "index.html" %}
+{% load static %}
+{% block title %}Employee Profile{% endblock title %}
+{% block content %}
+<div class="flex flex-col min-h-[100dvh] bg-slate-300">
+    <div style="background: url({% static "images/profile_banner.png" %}) no-repeat center;background-size:cover;" class="relative h-[35dvh] before:content-[''] before:bg-[rgba(0,0,0,.4)] before:absolute before:inset-0"></div>
+    <div class="relative flex min-h-[65dvh] justify-evenly items-start">
+    <div class="absolute flex flex-col gap-[1rem] -top-[7rem] left-[5rem]">
+        <img src="{{employee.image.url}}" alt="{{employee.user.username}}" class="size-[15rem] rounded-[100rem]">
+        <div class="text-lg opacity-60 font-semibold">EMPLOYEE DETAILS</div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Name</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.user.username }}</div>
         </div>
-        <div class="w-[15rem]"></div>
-        <div class="w-[16rem] flex flex-col gap-[1rem] mt-[5rem]">
-            <div class="text-lg opacity-60 font-semibold">ROLE</div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Role</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.get_designation_display }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Department</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.department }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Experience</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.years_of_working }}</div>
-            </div>
-            <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
-                <div class="text-sm opacity-60">Date Joined</div>
-                <div class="text-lg capitalize font-semibold">{{ employee.hire_date|date:"F j, Y" }}</div>
-            </div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Gender</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.get_gender_display }}</div>
         </div>
-        <a class="bg-blue-700 p-[1rem_1.5rem] mt-[6.5rem] rounded-2xl text-lg text-white font-semibold" href="/update_profile/{{employee.user.id}}">Update Profile</a>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Contact</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.contact }}</div>
+        </div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Position</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.job_title }}</div>
         </div>
     </div>
-</body>
-</html>
+    <div class="w-[15rem]"></div>
+    <div class="w-[16rem] flex flex-col gap-[1rem] mt-[5rem]">
+        <div class="text-lg opacity-60 font-semibold">ROLE</div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Role</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.get_designation_display }}</div>
+        </div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Department</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.department }}</div>
+        </div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Experience</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.years_of_working }}</div>
+        </div>
+        <div class="flex flex-col bg-slate-200 p-[.3rem] mx-[.4rem] rounded-md">
+            <div class="text-sm opacity-60">Date Joined</div>
+            <div class="text-lg capitalize font-semibold">{{ employee.hire_date|date:"F j, Y" }}</div>
+        </div>
+    </div>
+    <a class="bg-blue-700 p-[1rem_1.5rem] mt-[6.5rem] rounded-2xl text-lg text-white font-semibold" href="/update_profile/{{employee.user.id}}">Update Profile</a>
+    </div>
+</div>
+{% endblock content %}

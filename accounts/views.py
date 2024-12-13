@@ -56,10 +56,25 @@ def user_logout(request):
     logout(request)
     return redirect('/')
 
-@login_required(login_url='/users/login')
+def about(request):
+    if request.user.is_authenticated:
+        employee = Employee.objects.filter(user = request.user).first()
+        return render(request, 'about.html',{'employee': employee})
+    return render(request,'about.html',{})
+
+def contact(request):
+    if request.user.is_authenticated:
+        employee = Employee.objects.filter(user = request.user).first()
+        return render(request, 'contact.html',{'employee': employee})
+    return render(request,'contact.html',{})
+
+
 def home(request):
-    employee = Employee.objects.filter(user = request.user).first()
-    return render(request, 'users/home.html',{'employee': employee})
+    if request.user.is_authenticated:
+        employee = Employee.objects.filter(user = request.user).first()
+        return render(request, 'users/home.html',{'employee': employee})
+    else:
+        return render(request, 'users/home.html')
 
 @login_required(login_url='/users/login')
 @hr_or_admin_required
