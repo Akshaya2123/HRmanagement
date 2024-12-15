@@ -1,1 +1,125 @@
-{% include "index.html" %}
+{% extends "index.html" %} 
+{% load static %}
+{% block title %}Contact us{% endblock title %} 
+{% block content %}
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50" data-messages-exist="{{ messages|length|yesno:'true,false' }}" id="popup" style="display:none">
+    <div class="bg-white p-[2rem] flex flex-col justify-center items-center w-[40ch] rounded-lg shadow-lg">
+        {% for message in messages %}
+        <div class="text-lg font-semibold text-center">{{ message }}</div>
+        {% endfor %}
+        <button class="mt-[1rem] bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="closePopup()">Close</button>
+    </div>
+</div>
+<div style="background: url({% static "images/banner.jpg" %}) no-repeat center;background-size:cover;" class="fixed top-0 before:content-[''] before:bg-[rgba(0,0,0,.7)] before:absolute before:inset-0 -z-[10] h-[100dvh] w-[100dvw]"></div>
+<div class="flex flex-col justify-evenly min-h-[70rem]">
+    <div class="h-[20rem] bg-transparent flex flex-col gap-[2rem] justify-center items-center text-white">
+    <div class="text-6xl font-bold">Contact Us</div>
+    <div class="text-2xl font-light">Have Questions, Feedback, or need Assistance? We're here to help !</div>
+    </div>
+    <div class="flex bg-white justify-evenly p-[4rem]">
+        <div class="flex flex-col shadow-lg hover:shadow-2xl w-[30ch] p-[2rem_3rem]">
+            <div class="text-2xl font-semibold">Email Us</div>
+            <hr class="h-[.1rem] my-[1rem] bg-black">
+            <a href="mailto:akshaya.03070@gmail.com">support@gmail.com</a>
+        </div>
+        <div class="flex flex-col shadow-lg hover:shadow-2xl w-[30ch] p-[2rem_3rem]">
+            <div class="text-2xl font-semibold">Call Us</div>
+            <hr class="h-[.1rem] my-[1rem] bg-black">
+            <div>+91 12345 67890</div>
+        </div>
+        <div class="flex flex-col shadow-lg hover:shadow-2xl w-[30ch] p-[2rem_3rem]">
+            <div class="text-2xl font-semibold">Visit Us</div>
+            <hr class="h-[.1rem] my-[1rem] bg-black">
+            <div>12, Redhills Road, Surapet, Chennai, Tamil Nadu</div>
+        </div>
+    </div>
+    <div class="h-[20rem] bg-transparent flex flex-col gap-[2rem] justify-center items-center text-white">
+        <div class="text-6xl font-bold">Send Us Your Queries</div>
+        <div class="text-2xl font-light">Fill out the form below, and one of our team members will POST back to you as soon as possible.</div>
+    </div>
+    <div class="flex justify-center items-center bg-white">
+        <form
+        id="form"
+        class="flex flex-col justify-center items-center p-[2rem] w-[40vw] gap-[5vh]"
+        method="post"
+      >
+        {% csrf_token %}
+        <div class="text-[4rem] pb-[2rem] font-semibold">Queries</div>
+        <div class="relative h-[5vh] w-[70%]">
+          <input
+            name="name"
+            id="name"
+            class="peer border-b-2 border-black bg-transparent outline-none h-full w-full"
+            type="text"
+            value="{{request.POST.name|default:""}}"
+            placeholder=""
+          />
+          <label
+            for="name"
+            class="absolute -top-1 left-0 text-sm -translate-y-1/2 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg"
+          >
+            Name
+          </label>
+        </div>
+        <div class="relative h-[5vh] w-[70%]">
+          <input
+            name="email"
+            id="email"
+            class="peer border-b-2 border-black bg-transparent outline-none h-full w-full"
+            type="email"
+            value="{{request.POST.email|default:""}}"
+            placeholder=""
+          />
+          <label
+            for="email"
+            class="absolute -top-1 left-0 text-sm -translate-y-1/2 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg"
+            >Email</label
+          >
+        </div>
+        <div class="relative h-[5vh] w-[70%]">
+            <input
+              name="subject"
+              id="subject"
+              class="peer border-b-2 border-black bg-transparent outline-none h-full w-full"
+              type="text"
+              value="{{request.POST.subject|default:""}}"
+              placeholder=""
+            />
+            <label
+              for="subject"
+              class="absolute -top-1 left-0 text-sm -translate-y-1/2 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg"
+            >
+              Subject
+            </label>
+          </div>
+          <div class="relative w-[70%]">
+            <textarea
+              name="message"
+              id="message"
+              class="peer border-2 p-[1rem] border-black bg-transparent outline-none min-h-[10rem] w-full"
+              placeholder=""
+            >{{ request.POST.message|default:"" }}</textarea>
+            <label
+              for="message"
+              class="absolute -top-[1.5rem] left-0 peer-placeholder-shown:left-[1rem] text-sm transition-all peer-placeholder-shown:top-[.8rem] peer-placeholder-shown:text-lg"
+            >
+              Message
+            </label>
+          </div>
+        <input
+          type="submit"
+          class="bg-sky-400 rounded-xl cursor-pointer p-[.5rem_1.5rem] border-[.2rem] border-sky-400 text-white text-lg hover:border-white"
+          value="Submit"
+        />
+      </form>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const messagesExist = document.getElementById('popup').dataset.messagesExist === "true";
+      if (messagesExist) {
+        document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+{% endblock content %}

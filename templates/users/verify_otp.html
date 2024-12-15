@@ -21,10 +21,15 @@
             {% endif %} 
             font-semibold">{{ message }}</div>
             {% endfor %}
-            <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" class="border-[.15rem] outline-none text-lg rounded-lg mt-[1rem] p-[.25rem_.75rem] border-slate-400 text-center">
+            <input type="text" name="otp" id="otp" placeholder="Enter OTP" maxlength="6" class="border-[.15rem] outline-none text-lg rounded-lg mt-[1rem] p-[.25rem_.75rem] border-slate-400 text-center">
             <input type="submit" value="Verify" class="bg-slate-400 cursor-pointer p-[.5rem_1rem] rounded-xl text-white font-semibold text-lg">
             <a href="/request_new_otp" class="underline text-purple-700">Resend OTP</a>
         </form>
     </div>
+    <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              document.querySelector('#otp').focus()
+            });
+    </script>
 </body>
 </html>

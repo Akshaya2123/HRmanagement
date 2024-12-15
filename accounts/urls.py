@@ -10,6 +10,7 @@ urlpatterns = [
     path('employees/<str:id>',views.employee,name='employee'),
     path('about/',views.about,name='about'),
     path('contact/',views.contact,name='contact'),
+    path('features/',views.features,name='features'),
     path('update_profile/<str:id>',views.update_profile,name='update_profile'),
     path('verify_otp/',views.verify_otp,name='verify-otp'),
     path('request_new_otp/',views.request_new_otp,name='request_new_otp')]

@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMessage
 from .models import Employee,OTP
 from .decorators import hr_or_admin_required
 
@@ -62,7 +62,31 @@ def about(request):
         return render(request, 'about.html',{'employee': employee})
     return render(request,'about.html',{})
 
+def features(request):
+    if request.user.is_authenticated:
+        employee = Employee.objects.filter(user = request.user).first()
+        return render(request, 'features.html',{'employee': employee})
+    return render(request,'features.html',{})
+
 def contact(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        if name and email and subject and message:
+            email_message = EmailMessage(
+                subject=subject,
+                body=f"Message from {name} ({email}):\n\n{message}",
+                from_email=settings.EMAIL_HOST_USER,
+                to=[settings.EMAIL_HOST_USER],
+                headers={'Reply-To': email},  
+            )
+            email_message.send(fail_silently=False)
+            messages.info(request,"Your Query has been sent !")
+            return redirect('/contact')
+        else:
+            messages.info(request,"Please fill out all the details !")
     if request.user.is_authenticated:
         employee = Employee.objects.filter(user = request.user).first()
         return render(request, 'contact.html',{'employee': employee})
@@ -79,11 +103,12 @@ def home(request):
 @login_required(login_url='/users/login')
 @hr_or_admin_required
 def employees(request):
-    if request.user.employee_set.first().designation == 'A':
-        employees = Employee.objects.filter(Q(designation__in=['H', 'E']) | Q(user=request.user))
+    employee = Employee.objects.filter(user = request.user).first()
+    if employee.designation == 'A':
+        employees = Employee.objects.filter(Q(designation__in=['H', 'E']) | Q(user=request.user)).exclude(user = request.user)
     else:
-        employees = Employee.objects.filter(Q(designation='E') | Q(user=request.user))
-    return render(request,'employees/employees.html',{ 'employees' : employees })
+        employees = Employee.objects.filter(designation='E')
+    return render(request,'employees/employees.html',{ 'employees' : employees,'employee':employee })
 
 @login_required(login_url='/users/login')
 def employee(request,id):

@@ -2,7 +2,7 @@
 {% block main %}
 <div class="min-h-[100dvh] flex flex-col">
   <div class="flex items-center justify-between px-[5vw] h-[10dvh] bg-white">
-    <div class="font-bold text-3xl text-sky-500">HR Management System</div>
+    <div class="font-bold text-3xl text-sky-400">HR Management System</div>
     <div class="flex items-center justify-center text-lg gap-6">
       <a href="/" class="">Home</a>
       {% if employee.designation != "E" %}
@@ -42,5 +42,25 @@
   <hr class="h-[.1rem] bg-black" />
   {% include "footer.html" %}
 </div>
+<script>
+  function showPopup() {
+      const popup = document.getElementById("popup");
+      popup.style.display = "flex";
+      document.querySelector('#popup button').focus()
+  }
+
+  function closePopup() {
+      const popup = document.getElementById("popup");
+      popup.style.display = "none";
+      document.querySelector('form #name').focus()
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+      const messagesExist = document.getElementById('popup').dataset.messagesExist === "true";
+      if (messagesExist) {
+          showPopup();
+      }
+  });
+</script>
 
 {% endblock main %}

@@ -2,14 +2,22 @@
 {% load static %}
 {% block title %}Home{% endblock title %}
 {% block content %}
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50" data-messages-exist="{{ messages|length|yesno:'true,false' }}" id="popup" style="display:none">
+    <div class="bg-white p-[2rem] flex flex-col justify-center items-center w-[40ch] rounded-lg shadow-lg">
+        {% for message in messages %}
+        <div class="text-lg font-semibold text-center">{{ message }}</div>
+        {% endfor %}
+        <button class="mt-[1rem] bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="closePopup()">Close</button>
+    </div>
+</div>
 <div class="flex flex-col min-h-[100dvh]">
     <div class="flex items-center justify-around bg-sky-600 p-[2rem_4rem]">
         <div class="flex flex-col gap-3">
             <div class="text-6xl font-semibold w-[20ch]">Welcome to HR Management System</div>
-            <div class="text-2xl font-light">We are here to Help you Manage <span class="underline [text-decoration-thickness:.2rem] font-bold">Human Resources</span></div>
+            <div class="text-2xl font-light">We are here to Help you Manage <span class="underline underline-offset-2 [text-decoration-thickness:.2rem] font-bold">Human Resources</span></div>
         </div>
         <div class="flex justify-center items-center rounded-[50rem] bg-sky-100 h-[25rem] aspect-square">
-            <img class="h-[20rem]" src="{% static "images/hero_image.webp" %}" alt="">
+            <img class="h-[20rem]" src="{% static "images/hero_image.webp" %}" alt="Hero Banner">
         </div>
     </div>
     <div class="bg-sky-600 h-[5rem] rounded-b-[50%]"></div>
