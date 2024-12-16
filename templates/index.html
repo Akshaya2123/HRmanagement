@@ -43,24 +43,75 @@
   {% include "footer.html" %}
 </div>
 <script>
-  function showPopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = "flex";
-      document.querySelector('#popup button').focus()
-  }
+    function showPopup() {
+        const popup = document.getElementById("popup");
+        popup.style.display = "flex";
+        document.querySelector('#popup button').focus()
+    }
 
-  function closePopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = "none";
-      document.querySelector('form #name').focus()
-  }
+    function closePopup() {
+        const popup = document.getElementById("popup");
+        popup.style.display = "none";
+        document.querySelector('form #name').focus()
+    }
 
-  document.addEventListener("DOMContentLoaded", () => {
-      const messagesExist = document.getElementById('popup').dataset.messagesExist === "true";
-      if (messagesExist) {
-          showPopup();
-      }
-  });
+    document.addEventListener("DOMContentLoaded", () => {
+        const messagesExist = document.getElementById('popup').dataset.messagesExist === "true";
+        if (messagesExist) {
+            showPopup();
+        }
+    });
+
+
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Performance Rating',
+                data: {{ ratings|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)', 
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+				barThickness: 70
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Review Periods',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 5, 
+                    title: {
+                        display: true,
+                        text: 'Rating (Out of 5)',
+                        font: {
+                            size: 16
+                        }
+                    }
+                }
+            }
+        }
+    });
 </script>
 
 {% endblock main %}

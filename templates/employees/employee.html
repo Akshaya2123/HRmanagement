@@ -2,6 +2,14 @@
 {% load static %}
 {% block title %}Employee Profile{% endblock title %}
 {% block content %}
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50" data-messages-exist="{{ messages|length|yesno:'true,false' }}" id="popup" style="display:none">
+    <div class="bg-white p-[2rem] flex flex-col justify-center items-center w-[40ch] rounded-lg shadow-lg">
+        {% for message in messages %}
+        <div class="text-lg font-semibold text-center">{{ message }}</div>
+        {% endfor %}
+        <button class="mt-[1rem] bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="closePopup()">Close</button>
+    </div>
+</div>
 <div class="flex flex-col min-h-[100dvh] bg-slate-300">
     <div style="background: url({% static "images/profile_banner.png" %}) no-repeat center;background-size:cover;" class="relative h-[35dvh] before:content-[''] before:bg-[rgba(0,0,0,.4)] before:absolute before:inset-0"></div>
     <div class="relative flex min-h-[65dvh] justify-evenly items-start">
@@ -45,7 +53,16 @@
             <div class="text-lg capitalize font-semibold">{{ employee.hire_date|date:"F j, Y" }}</div>
         </div>
     </div>
-    <a class="bg-blue-700 p-[1rem_1.5rem] mt-[6.5rem] rounded-2xl text-lg text-white font-semibold" href="/update_profile/{{employee.user.id}}">Update Profile</a>
+    <div class="flex flex-col mt-[10rem] gap-[2rem] justify-center">
+        <a class="bg-blue-700 hover:bg-blue-600 p-[1rem_1.5rem] rounded-2xl text-lg text-white font-semibold" href="/update_profile/{{employee.user.id}}">Update Profile</a>
+        <a class="bg-green-700 hover:bg-green-600 p-[1rem_1.5rem] rounded-2xl text-lg text-center text-white font-semibold" href="/apply_leave/">Apply Leave</a>
+    </div>
+    </div>
+    <div class="flex min-h-[40rem] border-t-[1px] border-black">
+        <div class="flex flex-col gap-[1rem] basis-1/2 p-[2rem]">
+            <div class="text-3xl font-semibold">Performance</div>
+            <canvas class="size-[30rem]" id="performanceChart"></canvas>
+        </div>
     </div>
 </div>
 {% endblock content %}

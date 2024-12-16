@@ -1,3 +1,4 @@
+from datetime import datetime
 import random
 from django.conf import settings
 from django.utils.timezone import now,timedelta
@@ -7,7 +8,7 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail,EmailMessage
-from .models import Employee,OTP
+from .models import Employee,OTP,Leave,PerformanceAnalysis
 from .decorators import hr_or_admin_required
 
 User = get_user_model()
@@ -114,7 +115,10 @@ def employees(request):
 def employee(request,id):
     user = User.objects.filter(id = id).first()
     employee = Employee.objects.filter(user = user).first()
-    return render(request,'employees/employee.html',{ 'employee':employee })
+    performance = PerformanceAnalysis.objects.filter(employee=employee).order_by('review_period_start')
+    labels = [f"{record.review_period_start.strftime('%b %Y')} - {record.review_period_end.strftime('%b %Y')}" for record in performance]
+    ratings = [float(record.rating or 0) for record in performance]
+    return render(request,'employees/employee.html',{ 'employee':employee,'labels':labels, 'ratings':ratings })
 
 @login_required(login_url='/users/login')
 def update_profile(request,id):
@@ -183,3 +187,26 @@ def send_otp(user, otp):
     message = f'Hello {user.username},\n\nYour OTP code is {otp}.\n\nIt will expire in 10 minutes.'
     recipient_list = [user.email]
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
+@login_required(login_url='/users/login')
+def apply_leave(request):
+    if request.method == "POST":
+        employee = Employee.objects.get(user=request.user)
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        reason = request.POST.get('reason')
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        try:
+            leave = Leave(
+                employee=employee,
+                start_date=start_date,
+                end_date=end_date,
+                reason=reason
+            )
+            leave.save()
+            messages.info(request, "Leave applied successfully.")
+        except ValueError as e:
+            messages.info(request, str(e))
+        return redirect(f"/employees/{request.user.id}")
+    return render(request,'employees/apply_leave.html',{})

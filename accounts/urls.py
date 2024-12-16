@@ -13,4 +13,6 @@ urlpatterns = [
     path('features/',views.features,name='features'),
     path('update_profile/<str:id>',views.update_profile,name='update_profile'),
     path('verify_otp/',views.verify_otp,name='verify-otp'),
-    path('request_new_otp/',views.request_new_otp,name='request_new_otp')]
+    path('request_new_otp/',views.request_new_otp,name='request_new_otp'),
+    path('apply_leave/',views.apply_leave,name="apply_leave"),
+    ]

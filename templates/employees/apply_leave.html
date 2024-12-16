@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Leave</title>
+    {% include "css.html" %}
+</head>
+<body>
+    <div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50" data-messages-exist="{{ messages|length|yesno:'true,false' }}" id="popup" style="display:none">
+        <div class="bg-white p-[2rem] flex flex-col justify-center items-center w-[40ch] rounded-lg shadow-lg">
+            {% for message in messages %}
+            <div class="text-lg font-semibold text-center">{{ message }}</div>
+            {% endfor %}
+            <button class="mt-[1rem] bg-sky-600 text-white px-4 py-2 rounded-lg" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+    <div class="min-h-[100dvh] flex justify-center items-center bg-slate-300">
+        <form method="post" class="bg-white p-[2rem] gap-[1rem] flex flex-col items-center min-w-[30rem]">
+            {% csrf_token %}
+            <div class="text-4xl font-semibold p-[1rem_2rem] text-center">Leave Form</div>
+            <div class="p-[1rem_2rem] flex gap-[1rem] items-center w-[80%]">
+                <label class="basis-1/2 text-lg" for="start_date">Start Date</label>
+                <input class="border-b-2 border-black outline-none basis-1/2" type="date" name="start_date" id="start_date">
+            </div>
+            <div class="p-[1rem_2rem] flex gap-[1rem] items-center w-[80%]">
+                <label class="basis-1/2 text-lg" for="end_date">End Date</label>
+                <input class="border-b-2 border-black outline-none basis-1/2" type="date" name="end_date" id="end_date">
+            </div>
+            <div class="relative p-[1rem_2rem] flex gap-[1rem] items-center w-[80%]">
+            <textarea
+              name="reason"
+              id="reason"
+              class="peer border-2 p-[1rem] border-black bg-transparent outline-none min-h-[10rem] w-full"
+              placeholder=""
+            >{{ request.POST.reason|default:"" }}</textarea>
+            <label
+              for="reason"
+              class="absolute -top-[1rem] left-[2rem] peer-placeholder-shown:left-[3rem] text-sm transition-all peer-placeholder-shown:top-[2rem] peer-placeholder-shown:text-lg"
+            >
+              Reason
+            </label>
+            </div>
+            <input class="bg-blue-600 hover:bg-blue-500 cursor-pointer p-[.8rem_1.8rem] rounded-xl font-semibold text-white text-lg" type="submit" value="Apply">
+        </form>
+    </div>
+    <script>
+        function showPopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "flex";
+            document.querySelector('#popup button').focus()
+        }
+      
+        function closePopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
+            document.querySelector('form #name').focus()
+        }
+      
+        document.addEventListener("DOMContentLoaded", () => {
+            const messagesExist = document.getElementById('popup').dataset.messagesExist === "true";
+            if (messagesExist) {
+                showPopup();
+            }
+        });
+      </script>
+</body>
+</html>
