@@ -1,9 +1,12 @@
+import calendar
 from datetime import datetime
 import random
 from django.conf import settings
+from django.http import JsonResponse
 from django.utils.timezone import now,timedelta
 from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.db.models.functions import ExtractYear
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -115,10 +118,12 @@ def employees(request):
 def employee(request,id):
     user = User.objects.filter(id = id).first()
     employee = Employee.objects.filter(user = user).first()
-    performance = PerformanceAnalysis.objects.filter(employee=employee).order_by('review_period_start')
-    labels = [f"{record.review_period_start.strftime('%b %Y')} - {record.review_period_end.strftime('%b %Y')}" for record in performance]
-    ratings = [float(record.rating or 0) for record in performance]
-    return render(request,'employees/employee.html',{ 'employee':employee,'labels':labels, 'ratings':ratings })
+    distinct_years_attendance = Leave.objects.annotate(year=ExtractYear('start_date')).values('year').distinct().order_by("year")
+    distinct_years_performance = PerformanceAnalysis.objects.annotate(year=ExtractYear('month_start')).values('year').distinct().order_by("year")
+    attendance_years_list = [year['year'] for year in distinct_years_attendance]
+    performance_years_list = [year['year'] for year in distinct_years_performance]
+    months = [(i, calendar.month_name[i]) for i in range(1, 13)]
+    return render(request,'employees/employee.html',{ 'employee':employee, 'attendance_years_list':attendance_years_list, 'performance_years_list':performance_years_list, 'months':months, 'now':datetime.now()})
 
 @login_required(login_url='/users/login')
 def update_profile(request,id):
@@ -210,3 +215,36 @@ def apply_leave(request):
             messages.info(request, str(e))
         return redirect(f"/employees/{request.user.id}")
     return render(request,'employees/apply_leave.html',{})
+
+@login_required(login_url='/users/login')
+def attendance_chart(request,id):
+    month = request.GET.get("month")
+    year = request.GET.get("year")
+    employee = Employee.objects.filter(user__id=id).first()
+    month_start = datetime.strptime(f"{year}-{month}","%Y-%m")
+    month_end = (month_start + timedelta(days=31)).replace(day=1)
+    if datetime.now() < month_start:
+        return
+    leaves = Leave.objects.filter(employee=employee,start_date__gte=month_start,end_date__lt=month_end)
+    total_leave_days = sum([leave.total_leave_days() for leave in leaves])
+    total_days = calendar.monthrange(int(year),int(month))[1]
+    working_days = total_days - total_leave_days
+    return JsonResponse({
+        "labels": ["Working Days", "Leave Days"],
+        "data": [working_days, total_leave_days],
+    })
+
+@login_required(login_url='/users/login')
+def performance_chart(request,id):
+    year = request.GET.get('year')
+    employee = Employee.objects.filter(user__id=id).first()
+    year_start = datetime.strptime(year,"%Y")
+    year_end = (year_start + timedelta(days=366)).replace(day=1)
+    performance = PerformanceAnalysis.objects.filter(employee=employee,month_start__lt=year_end,month_start__gte=year_start).order_by('month_start')
+    labels = [f"{record.month_start.strftime('%b %Y')}" for record in performance]
+    ratings = [float(record.rating or 0) for record in performance]
+    print(labels,ratings)
+    return JsonResponse({
+        "labels": labels,
+        "ratings": ratings,
+    })

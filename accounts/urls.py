@@ -15,4 +15,6 @@ urlpatterns = [
     path('verify_otp/',views.verify_otp,name='verify-otp'),
     path('request_new_otp/',views.request_new_otp,name='request_new_otp'),
     path('apply_leave/',views.apply_leave,name="apply_leave"),
+    path('get_performance_data/<str:id>',views.performance_chart,name="get_performance_data"),
+    path('get_attendance_data/<str:id>',views.attendance_chart,name="get_attendance_data"),
     ]

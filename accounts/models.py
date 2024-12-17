@@ -55,16 +55,12 @@ class Leave(models.Model):
 
 class PerformanceAnalysis(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    review_period_start = models.DateField() 
-    review_period_end = models.DateField() 
+    month_start = models.DateField()
     goals_set = models.TextField(blank=True, null=True)    
     goals_achieved = models.TextField(blank=True, null=True) 
     manager_feedback = models.TextField(blank=True, null=True) 
-    rating = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)  
+    rating = models.DecimalField(max_digits=3, decimal_places=2)  
     created_at = models.DateTimeField(auto_now_add=True) 
-
-    def review_duration(self):
-        return (self.review_period_end - self.review_period_start).days
     
     def get_goals_set(self):
         return self.goals_set.split(',')
@@ -73,18 +69,13 @@ class PerformanceAnalysis(models.Model):
         return self.goals_achieved.split(',')
 
     def __str__(self):
-        return f"{self.employee.user.username} - {self.review_period_start} to {self.review_period_end}"
+        return f"{self.employee.user.username} - {self.month_start.strftime("%B %Y")}"
     
     def save(self, *args, **kwargs):
-        total_duration = self.review_duration()
-        if total_duration < 0:
-            raise ValueError("End date must be after or equal to the start date.")
-        start = self.review_period_start.replace(day=1)
-        end = self.review_period_end.replace(day=1)
+        start = self.month_start.replace(day=1)
         existing_record = PerformanceAnalysis.objects.filter(
             employee=self.employee,
-            review_period_start=start,
-            review_period_end=end
+            month_start=start,
         ).first()
 
         if existing_record:
@@ -94,6 +85,5 @@ class PerformanceAnalysis(models.Model):
             existing_record.rating += self.rating
             existing_record.save()
         else:
-            self.review_period_start = start
-            self.review_period_end = end
+            self.month_start = start
             super().save(*args, **kwargs)

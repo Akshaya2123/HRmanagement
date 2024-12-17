@@ -58,11 +58,54 @@
         <a class="bg-green-700 hover:bg-green-600 p-[1rem_1.5rem] rounded-2xl text-lg text-center text-white font-semibold" href="/apply_leave/">Apply Leave</a>
     </div>
     </div>
-    <div class="flex min-h-[40rem] border-t-[1px] border-black">
+    <div class="flex lg:flex-row flex-col min-h-[40rem] border-t-[1px] border-black">
         <div class="flex flex-col gap-[1rem] basis-1/2 p-[2rem]">
             <div class="text-3xl font-semibold">Performance</div>
-            <canvas class="size-[30rem]" id="performanceChart"></canvas>
+            <div class="relative h-[30rem] flex justify-center items-center">
+                <canvas class="" id="performanceChart"></canvas>
+            </div>
+            <div>
+                <label for="performance_year">Select Year:</label>
+                <select id="performance_year" onchange="updatePerformanceChart({{employee.user.id}})">
+                    {% for year in performance_years_list %}
+                    <option value="{{ year }}" {% if year == now.year %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="flex flex-col gap-[1rem] basis-1/2 p-[2rem]">
+            <div class="text-3xl font-semibold">Attendance</div>
+            <div class="relative h-[30rem] flex justify-center items-center">
+                <canvas class="" id="attendanceChart"></canvas>
+            </div>
+            <div class="flex gap-[1rem]">
+                <label for="attendance_year">Year:</label>
+                <select id="attendance_year" onchange="updateAttendanceChart({{employee.user.id}})">
+                    {% for year in attendance_years_list %}
+                    <option value="{{ year }}" {% if year == now.year %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                    {% endfor %}
+                </select>
+        
+                <label for="attendance_month">Month:</label>
+                <select id="attendance_month" onchange="updateAttendanceChart({{employee.user.id}})">
+                    {% for month in months %}
+                    <option value="{{ month.0 }}" {% if month.0 == now.month %}selected{% endif %}>
+                        {{ month.1 }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      updatePerformanceChart({{ employee.user.id }});
+      updateAttendanceChart({{ employee.user.id }});
+    });
+  </script>
 {% endblock content %}
